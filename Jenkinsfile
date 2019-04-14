@@ -11,6 +11,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
+                pwd
+                ls -l
                 sh 'build.sh'
             }
         }
