@@ -1,18 +1,12 @@
 #!/bin/sh
-BUILD_DIR="./build"
+BUILD_DIR="target"
 
-#filename="./build.properties"
-#while read -r line; do
-#    name="$line"
-#    echo "Name read from file - $name"
-#done < "$filename"
-
-#echo "$line"
 USAGE="Usage:::: ./build.sh OR ./build.sh deploy-artifactory <artifactory url> <api key> <repo name>"
 
-# Validate the arguments
+ZIP_FILE="flight_lambda-0.1.0.zip"
+
 if [[ "$1" = "deploy-artifactory" ]]; then
-    if [[ -z "$2" ]]
+     if [[ -z "$2" ]]
       then
         echo "No Artifactory URL supplied"
         echo $USAGE
@@ -28,19 +22,16 @@ if [[ "$1" = "deploy-artifactory" ]]; then
         echo $USAGE
         exit 1
     fi
-fi
-
-ZIP_FILE="flight_lambda-0.1.0.zip"
-echo $BUILD_DIR
-rm -r target
-mkdir target
-cd target
-mkdir temp
-cp -a ../src/. temp/
-cd temp
-zip -r "../$ZIP_FILE" *
-
-if [[ "$1" = "deploy-artifactory" ]]; then
     echo "Deploying artifact!"
-    curl -H "X-JFrog-Art-Api:$3" -X PUT "$2/$4/com/kajal/flightbookings/get-flight/0.1.0/$ZIP_FILE" -T "../$ZIP_FILE"
+    cd $BUILD_DIR
+    curl -H "X-JFrog-Art-Api:$3" -X PUT "$2/$4/com/kajal/flightbookings/get-flight/0.1.0/$ZIP_FILE" -T "./$ZIP_FILE"
+else
+    echo $BUILD_DIR
+    rm -r $BUILD_DIR
+    mkdir $BUILD_DIR
+    cd $BUILD_DIR
+    mkdir temp
+    cp -a ../src/. temp/
+    cd temp
+    zip -r "../$ZIP_FILE" *
 fi

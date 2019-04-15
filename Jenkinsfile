@@ -12,16 +12,10 @@ pipeline {
                         echo "Artifactory API Access Key: ${env.ARTIFACTORY_API_ACCESS_KEY}"
                     }
                 }
-        stage('Code Checkout') {
-                steps {
-                    echo 'Checking Out Code..'
-                    checkout scm
-                }
-            }
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh "./build.sh deploy-artifactory ${env.ARTIFACTORY_URL} ${ARTIFACTORY_API_ACCESS_KEY} gradle-dev"
+                sh "./build.sh"
             }
         }
         stage('Test') {
@@ -29,9 +23,10 @@ pipeline {
                 echo 'Testing..'
             }
         }
-        stage('Deploy') {
+        stage('Upload to Artifactory') {
             steps {
-                echo 'Deploying....'
+                echo 'Upload to Artifactory....'
+                sh "./build.sh deploy-artifactory ${env.ARTIFACTORY_URL} ${ARTIFACTORY_API_ACCESS_KEY} gradle-dev"
             }
         }
     }
