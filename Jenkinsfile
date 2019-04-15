@@ -5,6 +5,7 @@ pipeline {
         stage('Info') {
                     steps {
                         echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
+                        echo "Artifactory URL: ${env.ARTIFACTORY_URL}"
                     }
                 }
         stage('Code Checkout') {
@@ -16,7 +17,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh './build.sh'
+                sh "./build.sh deploy-artifactory ${env.ARTIFACTORY_URL}"
             }
         }
         stage('Test') {
